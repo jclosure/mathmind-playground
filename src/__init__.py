@@ -1,0 +1,1 @@
+# MathMind Playground - Interactive Mathematical Explorations
