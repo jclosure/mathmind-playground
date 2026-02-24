@@ -22,6 +22,7 @@ MODULES = {
     "7": ("tensors", "Tensors - Beyond Matrices"),
     "8": ("physics", "Physics - Forces & Motion"),
 }
+MODULE_COUNT = len(MODULES)
 
 def print_banner():
     print("""
@@ -82,7 +83,7 @@ def main():
     
     while True:
         print_menu()
-        choice = input("    Enter your choice (1-8, or q): ").strip().lower()
+        choice = input(f"    Enter your choice (1-{MODULE_COUNT}, or q): ").strip().lower()
         
         if choice == 'q':
             print("\n    Thanks for exploring! 🦞✨\n")

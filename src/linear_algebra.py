@@ -202,5 +202,65 @@ def snap_to_grid(evt):
                            round(u_vec.tip.pos.y), 0)
     u_vec.arrow.axis = u_vec.tip.pos
     u_vec.label_obj.pos = u_vec.tip.pos
-    
-    v_vec.tip.pos = vector
+
+    v_vec.tip.pos = vector(round(v_vec.tip.pos.x),
+                           round(v_vec.tip.pos.y), 0)
+    v_vec.arrow.axis = v_vec.tip.pos
+    v_vec.label_obj.pos = v_vec.tip.pos
+
+button(bind=snap_to_grid, text="Snap to Integer Grid",
+       background=vector(0.35, 0.6, 0.35))
+
+scene.append_to_caption("<br><br><b>Reset:</b><br>")
+
+
+def reset_vectors(evt):
+    """Reset both vectors to the defaults."""
+    u_vec.tip.pos = u_vec.initial_pos
+    v_vec.tip.pos = v_vec.initial_pos
+    u_vec.arrow.axis = u_vec.tip.pos
+    v_vec.arrow.axis = v_vec.tip.pos
+    u_vec.label_obj.pos = u_vec.tip.pos
+    v_vec.label_obj.pos = v_vec.tip.pos
+    u_vec.label_obj.text = u_vec._format_text(u_vec.tip.pos)
+    v_vec.label_obj.text = v_vec._format_text(v_vec.tip.pos)
+
+
+button(bind=reset_vectors, text="Reset Vectors",
+       background=vector(0.6, 0.4, 0.4))
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ANIMATION LOOP
+# ═══════════════════════════════════════════════════════════════════════════
+
+while True:
+    rate(60)
+
+    u_vec.update()
+    v_vec.update()
+
+    u = u_vec.tip.pos
+    v = v_vec.tip.pos
+    s = u + v
+
+    sum_arrow.visible = True
+    sum_label.visible = True
+    parallelogram.visible = True
+
+    sum_arrow.axis = s
+    sum_label.pos = s + vector(0.1, 0.1, 0)
+    sum_label.text = f"u+v = [{s.x:.2f}, {s.y:.2f}, {s.z:.2f}]"
+
+    parallelogram.clear()
+    parallelogram.append(vector(0, 0, 0))
+    parallelogram.append(u)
+    parallelogram.append(s)
+    parallelogram.append(v)
+    parallelogram.append(vector(0, 0, 0))
+
+    if SHOW_SPAN:
+        idx = 0
+        for a in [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]:
+            for b in [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]:
+                span_points[idx].pos = a * u + b * v
+                idx += 1
