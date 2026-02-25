@@ -217,7 +217,7 @@ while True:
     rate(60)
     
     # Handle mouse dragging
-    mouse_down = scene.mouse.down
+    mouse_down = scene.mouse.left  # Correct vpython API: .left, not .down
     
     # Start drag
     if mouse_down and not last_mouse_down and not DraggableVector.dragged_vector:
