@@ -84,18 +84,16 @@ if SHOW_GRID:
 class DraggableVector:
     """A vector that can be dragged around in 3D space."""
     
-    all_vectors = []  # Keep track of all vectors for mouse interaction
-    dragged_vector = None  # Currently being dragged
-    
     def __init__(self, position, color, label_text="v"):
         self.initial_pos = position
         self.color = color
         self.label_text = label_text
         self.dragging = False
+        self.drag_offset = vector(0, 0, 0)
         
         # The tip of the arrow (draggable sphere) - click this to drag
         self.tip = sphere(pos=position, radius=0.18, color=color,
-                          opacity=0.9, emissive=True)
+                          opacity=0.9, emissive=True, make_trail=False)
         
         # The arrow shaft
         self.arrow = arrow(pos=vector(0,0,0), axis=position,
@@ -104,29 +102,30 @@ class DraggableVector:
         # Label showing [x, y, z]
         self.label_obj = label(pos=position, text=self._format_text(position),
                                height=12, color=color, box=False)
-        
-        DraggableVector.all_vectors.append(self)
     
     def _format_text(self, pos):
         return f"{self.label_text} = [{pos.x:.2f}, {pos.y:.2f}, {pos.z:.2f}]"
     
-    def start_drag(self):
+    def start_drag(self, mouse_pos):
+        """Start dragging from current mouse position."""
         self.dragging = True
+        self.drag_offset = self.tip.pos - mouse_pos
         self.tip.color = vector(1, 1, 0)  # Highlight yellow
-        DraggableVector.dragged_vector = self
     
     def stop_drag(self):
+        """Stop dragging."""
         self.dragging = False
         self.tip.color = self.color
-        DraggableVector.dragged_vector = None
     
-    def update_position(self, new_x, new_y):
-        """Update vector position."""
-        new_pos = vector(new_x, new_y, 0)  # Keep in XY plane
-        self.tip.pos = new_pos
-        self.arrow.axis = new_pos
-        self.label_obj.pos = new_pos
-        self.label_obj.text = self._format_text(new_pos)
+    def update_position(self, mouse_pos):
+        """Update position based on current mouse position."""
+        if self.dragging:
+            new_pos = mouse_pos + self.drag_offset
+            new_pos.z = 0  # Keep in XY plane
+            self.tip.pos = new_pos
+            self.arrow.axis = new_pos
+            self.label_obj.pos = new_pos
+            self.label_obj.text = self._format_text(new_pos)
 
 
 # Create the two draggable vectors
@@ -160,6 +159,58 @@ for a in [0.25, 0.5, 0.75, 1.0, 1.25, 1.5]:
         span_points.append(pin)
 
 # ═══════════════════════════════════════════════════════════════════════════
+# MOUSE EVENT HANDLERS (VPython API: scene.bind)
+# ═══════════════════════════════════════════════════════════════════════════
+
+dragged_vec = None  # Currently being dragged vector
+
+
+def on_mousedown(evt):
+    """Called when mouse button is pressed."""
+    global dragged_vec
+    
+    # Get mouse position from event
+    if hasattr(evt, 'pos') and evt.pos:
+        mouse_pos = evt.pos
+    else:
+        # Fallback to scene.mouse()
+        mouse_pos = scene.mouse().pos
+    
+    # Check if mouse is near either vector tip
+    for vec in [u_vec, v_vec]:
+        if mag(mouse_pos - vec.tip.pos) < 0.5:
+            vec.start_drag(mouse_pos)
+            dragged_vec = vec
+            return  # Only drag one at a time
+
+
+def on_mousemove(evt):
+    """Called when mouse moves."""
+    # Get mouse position
+    if hasattr(evt, 'pos') and evt.pos:
+        mouse_pos = evt.pos
+    else:
+        mouse_pos = scene.mouse().pos
+    
+    # Update dragged vector
+    if dragged_vec:
+        dragged_vec.update_position(mouse_pos)
+
+
+def on_mouseup(evt):
+    """Called when mouse button is released."""
+    global dragged_vec
+    if dragged_vec:
+        dragged_vec.stop_drag()
+        dragged_vec = None
+
+
+# Bind mouse event handlers
+scene.bind('mousedown', on_mousedown)
+scene.bind('mousemove', on_mousemove)
+scene.bind('mouseup', on_mouseup)
+
+# ═══════════════════════════════════════════════════════════════════════════
 # UI CONTROLS
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -179,8 +230,16 @@ scene.append_to_caption("<br><br><b>Snap Vectors:</b><br>")
 
 def snap_to_grid(evt):
     """Snap vectors to integer grid."""
-    u_vec.update_position(round(u_vec.tip.pos.x), round(u_vec.tip.pos.y))
-    v_vec.update_position(round(v_vec.tip.pos.x), round(v_vec.tip.pos.y))
+    u_pos = u_vec.tip.pos
+    v_pos = v_vec.tip.pos
+    u_vec.tip.pos = vector(round(u_pos.x), round(u_pos.y), 0)
+    u_vec.arrow.axis = u_vec.tip.pos
+    u_vec.label_obj.pos = u_vec.tip.pos
+    u_vec.label_obj.text = u_vec._format_text(u_vec.tip.pos)
+    v_vec.tip.pos = vector(round(v_pos.x), round(v_pos.y), 0)
+    v_vec.arrow.axis = v_vec.tip.pos
+    v_vec.label_obj.pos = v_vec.tip.pos
+    v_vec.label_obj.text = v_vec._format_text(v_vec.tip.pos)
 
 button(bind=snap_to_grid, text="Snap to Integer Grid",
        background=vector(0.35, 0.6, 0.35))
@@ -189,8 +248,14 @@ scene.append_to_caption("<br><br><b>Reset:</b><br>")
 
 def reset_vectors(evt):
     """Reset both vectors to their initial positions."""
-    u_vec.update_position(u_vec.initial_pos.x, u_vec.initial_pos.y)
-    v_vec.update_position(v_vec.initial_pos.x, v_vec.initial_pos.y)
+    u_vec.tip.pos = u_vec.initial_pos
+    u_vec.arrow.axis = u_vec.initial_pos
+    u_vec.label_obj.pos = u_vec.initial_pos
+    u_vec.label_obj.text = u_vec._format_text(u_vec.initial_pos)
+    v_vec.tip.pos = v_vec.initial_pos
+    v_vec.arrow.axis = v_vec.initial_pos
+    v_vec.label_obj.pos = v_vec.initial_pos
+    v_vec.label_obj.text = v_vec._format_text(v_vec.initial_pos)
 
 button(bind=reset_vectors, text="Reset Vectors",
        background=vector(0.6, 0.4, 0.4))
@@ -199,50 +264,12 @@ button(bind=reset_vectors, text="Reset Vectors",
 # MAIN ANIMATION LOOP
 # ═══════════════════════════════════════════════════════════════════════════
 
-# Variables to track mouse state between frames
-last_button = None
-is_dragging = False
-selected_vector = None
+print("Ready! Click and drag the sphere tips to move vectors.")
 
-def get_vector_at_mouse():
-    """Check if mouse is near a vector tip."""
-    if scene.mouse.pos is None:
-        return None
-    mouse_pos = scene.mouse.pos
-    for vec in DraggableVector.all_vectors:
-        if mag(mouse_pos - vec.tip.pos) < 0.5:
-            return vec
-    return None
-
-# Main animation loop
+t = 0
 while True:
     rate(60)
-    
-    # Get current mouse event if one exists
-    # In VPython, we use getevent() to poll for mouse events
-    current_button = scene.mouse.button  # returns 'left', 'right', 'none', or None
-    
-    # Start drag on left click
-    if current_button == 'left' and not is_dragging:
-        clicked_vec = get_vector_at_mouse()
-        if clicked_vec:
-            clicked_vec.start_drag()
-            is_dragging = True
-            selected_vector = clicked_vec
-    
-    # Stop drag when button released
-    if current_button in [None, 'none'] and is_dragging:
-        if selected_vector:
-            selected_vector.stop_drag()
-        is_dragging = False
-        selected_vector = None
-    
-    # Update dragged vector position while dragging
-    if is_dragging and selected_vector and scene.mouse.pos:
-        mouse_pos = scene.mouse.pos
-        selected_vector.update_position(mouse_pos.x, mouse_pos.y)
-    
-    last_button = current_button
+    t += 0.01
     
     # Update visualizations
     u = u_vec.tip.pos
