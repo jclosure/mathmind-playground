@@ -8,7 +8,13 @@
 
 An interactive 3D playground for mathematical intuition. Built with VPython, designed for hacking.
 
-![MathMind teaser](assets/teaser.gif)
+<p align="center">
+  <img src="assets/hero_overview.png" alt="MathMind overview across all realms" width="900" />
+</p>
+
+<p align="center">
+  <img src="assets/teaser.gif" alt="MathMind teaser animation" width="900" />
+</p>
 
 ---
 
@@ -25,45 +31,24 @@ This is math as engineering candy.
 
 ## The Eight Realms
 
-### 1) Linear Algebra
-![Linear Algebra](assets/linear_algebra.png)
-- draggable vectors, sums, span grid
-- geometric vector addition and basis intuition
-
-### 2) Trigonometry
-![Trigonometry](assets/trigonometry.png)
-- unit circle, live sin/cos projections
-- wave generation from rotational motion
-
-### 3) Spatial Reasoning
-![Spatial Reasoning](assets/spatial_reasoning.png)
-- moving 3D heading vector
-- dot-product and angle interpretation in motion
-
-### 4) Geometry & Poses
-![Geometry & Poses](assets/geometry_poses.png)
-- pose control via translation + yaw/pitch/roll
-- world frame vs local body frame
-
-### 5) Binary Descriptors
-![Binary Descriptors](assets/binary_descriptors.png)
-- visual bit-ring descriptors
-- rotation/noise effects + Hamming distance
-
-### 6) Transforms
-![Transforms](assets/transforms.png)
-- local-to-world coordinate conversion
-- moving frame dynamics
-
-### 7) Tensors
-![Tensors](assets/tensors.png)
-- 3x3 tensor acting on vectors and local field points
-- quadratic form intuition
-
-### 8) Physics
-![Physics](assets/physics.png)
-- mass-spring-damper simulation
-- force vectors + energy readouts
+<table>
+  <tr>
+    <td align="center"><b>1) Linear Algebra</b><br/><img src="assets/linear_algebra.png" width="360"/><br/>draggable vectors, sums, span grid</td>
+    <td align="center"><b>2) Trigonometry</b><br/><img src="assets/trigonometry.png" width="360"/><br/>unit circle, sin/cos, wave linkage</td>
+  </tr>
+  <tr>
+    <td align="center"><b>3) Spatial Reasoning</b><br/><img src="assets/spatial_reasoning.png" width="360"/><br/>3D heading, dot product, angle</td>
+    <td align="center"><b>4) Geometry &amp; Poses</b><br/><img src="assets/geometry_poses.png" width="360"/><br/>translation + yaw/pitch/roll</td>
+  </tr>
+  <tr>
+    <td align="center"><b>5) Binary Descriptors</b><br/><img src="assets/binary_descriptors.png" width="360"/><br/>bit rings, rotation/noise, Hamming distance</td>
+    <td align="center"><b>6) Transforms</b><br/><img src="assets/transforms.png" width="360"/><br/>local-to-world frame conversion</td>
+  </tr>
+  <tr>
+    <td align="center"><b>7) Tensors</b><br/><img src="assets/tensors.png" width="360"/><br/>tensor action + quadratic form</td>
+    <td align="center"><b>8) Physics</b><br/><img src="assets/physics.png" width="360"/><br/>mass-spring-damper, forces, energy</td>
+  </tr>
+</table>
 
 ---
 

@@ -80,4 +80,48 @@ for i in range(36):
     frames.append(img)
 
 frames[0].save(ASSETS / "teaser.gif", save_all=True, append_images=frames[1:], duration=70, loop=0)
+
+# unified hero image that hints at all 8 realms
+hero = gradient((12, 18, 40), (64, 24, 92))
+d = ImageDraw.Draw(hero)
+
+# title band
+d.rounded_rectangle((40, 30, 1240, 170), radius=24, fill=(0, 0, 0, 140), outline=(180, 220, 255), width=2)
+d.text((72, 58), "MathMind Playground", fill=(255, 255, 255), font=FONT_TITLE)
+d.text((75, 124), "Eight realms, one language of reality", fill=(200, 225, 255), font=FONT_SUB)
+
+# 8 realm tiles
+labels = [
+    "Linear Algebra", "Trigonometry", "Spatial", "Geometry & Poses",
+    "Binary Descriptors", "Transforms", "Tensors", "Physics",
+]
+colors = [
+    (232, 107, 107), (90, 210, 255), (135, 245, 210), (255, 171, 92),
+    (95, 215, 205), (177, 156, 224), (250, 139, 144), (255, 220, 110),
+]
+
+x0, y0 = 70, 220
+tw, th = 270, 95
+padx, pady = 25, 25
+for i, (lbl, c) in enumerate(zip(labels, colors)):
+    r, col = divmod(i, 4)
+    x = x0 + col * (tw + padx)
+    y = y0 + r * (th + pady)
+    d.rounded_rectangle((x, y, x + tw, y + th), radius=16, fill=(0, 0, 0, 120), outline=c, width=3)
+    d.text((x + 16, y + 30), lbl, fill=(245, 250, 255), font=FONT_SUB)
+
+# center motif: lens/rings + waveform
+cx, cy = 640, 590
+for r in range(65, 250, 35):
+    d.ellipse((cx-r, cy-r, cx+r, cy+r), outline=(120, 255, 220), width=2)
+
+pts = []
+for x in range(70, 1210, 6):
+    y = int(cy + 30 * math.sin((x / 70.0) + 0.8))
+    pts.append((x, y))
+d.line(pts, fill=(255, 210, 90), width=4)
+
+d.text((470, 665), "Truth through multiple lenses", fill=(220, 230, 255), font=FONT_SUB)
+hero.save(ASSETS / "hero_overview.png")
+
 print("Generated media in", ASSETS)
