@@ -47,6 +47,7 @@ Arrow keys: rotate view | Scroll: zoom<br>
 """
 scene.range = 5
 scene.background = vector(0.1, 0.1, 0.15)
+scene.autoscale = False  # Prevent auto-scaling from interfering with interaction
 
 # Camera position
 scene.camera.pos = vector(8, 8, 8)
@@ -169,16 +170,13 @@ def on_mousedown(evt):
     """Called when mouse button is pressed."""
     global dragged_vec
     
-    # Get mouse position from event
-    if hasattr(evt, 'pos') and evt.pos:
-        mouse_pos = evt.pos
-    else:
-        # Fallback to scene.mouse()
-        mouse_pos = scene.mouse().pos
+    # Get mouse position from event (evt.pos is world coordinates)
+    mouse_pos = evt.pos
     
-    # Check if mouse is near either vector tip
+    # Check if mouse is near either vector tip (larger hit area: 1.0 instead of 0.5)
     for vec in [u_vec, v_vec]:
-        if mag(mouse_pos - vec.tip.pos) < 0.5:
+        dist = mag(mouse_pos - vec.tip.pos)
+        if dist < 1.0:
             vec.start_drag(mouse_pos)
             dragged_vec = vec
             return  # Only drag one at a time
@@ -186,15 +184,9 @@ def on_mousedown(evt):
 
 def on_mousemove(evt):
     """Called when mouse moves."""
-    # Get mouse position
-    if hasattr(evt, 'pos') and evt.pos:
-        mouse_pos = evt.pos
-    else:
-        mouse_pos = scene.mouse().pos
-    
-    # Update dragged vector
-    if dragged_vec:
-        dragged_vec.update_position(mouse_pos)
+    # Update dragged vector position
+    if dragged_vec and evt.pos:
+        dragged_vec.update_position(evt.pos)
 
 
 def on_mouseup(evt):
