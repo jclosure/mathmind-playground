@@ -93,7 +93,7 @@ class DraggableVector:
         self.drag_offset = vector(0, 0, 0)
         
         # The tip of the arrow (draggable sphere) - click this to drag
-        self.tip = sphere(pos=position, radius=0.18, color=color,
+        self.tip = sphere(pos=position, radius=0.35, color=color,
                           opacity=0.9, emissive=True, make_trail=False)
         
         # The arrow shaft
