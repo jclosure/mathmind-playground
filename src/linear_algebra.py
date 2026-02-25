@@ -200,7 +200,9 @@ button(bind=reset_vectors, text="Reset Vectors",
 # ═══════════════════════════════════════════════════════════════════════════
 
 # Variables to track mouse state between frames
-last_mouse_down = False
+last_button = None
+is_dragging = False
+selected_vector = None
 
 def get_vector_at_mouse():
     """Check if mouse is near a vector tip."""
@@ -216,25 +218,31 @@ def get_vector_at_mouse():
 while True:
     rate(60)
     
-    # Handle mouse dragging
-    mouse_down = scene.mouse.left  # Correct vpython API: .left, not .down
+    # Get current mouse event if one exists
+    # In VPython, we use getevent() to poll for mouse events
+    current_button = scene.mouse.button  # returns 'left', 'right', 'none', or None
     
-    # Start drag
-    if mouse_down and not last_mouse_down and not DraggableVector.dragged_vector:
+    # Start drag on left click
+    if current_button == 'left' and not is_dragging:
         clicked_vec = get_vector_at_mouse()
         if clicked_vec:
             clicked_vec.start_drag()
+            is_dragging = True
+            selected_vector = clicked_vec
     
-    # Stop drag
-    if not mouse_down and last_mouse_down and DraggableVector.dragged_vector:
-        DraggableVector.dragged_vector.stop_drag()
+    # Stop drag when button released
+    if current_button in [None, 'none'] and is_dragging:
+        if selected_vector:
+            selected_vector.stop_drag()
+        is_dragging = False
+        selected_vector = None
     
-    # Update dragged vector position
-    if DraggableVector.dragged_vector and scene.mouse.pos:
+    # Update dragged vector position while dragging
+    if is_dragging and selected_vector and scene.mouse.pos:
         mouse_pos = scene.mouse.pos
-        DraggableVector.dragged_vector.update_position(mouse_pos.x, mouse_pos.y)
+        selected_vector.update_position(mouse_pos.x, mouse_pos.y)
     
-    last_mouse_down = mouse_down
+    last_button = current_button
     
     # Update visualizations
     u = u_vec.tip.pos
