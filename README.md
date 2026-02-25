@@ -1,65 +1,82 @@
 # MathMind Playground 🧠✨
 
-> *"Teaching the fundamental structures of thought, to ourselves and our descendants."*
+> *Teaching the fundamental structures of thought, to ourselves and our descendants.*
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![VPython](https://img.shields.io/badge/powered-VPython-orange.svg)](https://vpython.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
-An interactive VPython playground for learning math and physics by manipulating live 3D scenes.
+An interactive 3D playground for mathematical intuition. Built with VPython, designed for hacking.
 
-No cram-and-forget formulas. You drag vectors, move frames, tune sliders, and watch the ideas happen.
+![MathMind teaser](assets/teaser.gif)
 
 ---
 
-## What’s implemented
+## Why this exists
 
-Eight runnable modules:
+Most math education asks you to trust symbols first and intuition later.
 
-1. **Linear Algebra** (`src/linear_algebra.py`)
-   - draggable vectors
-   - vector sum + parallelogram
-   - span visualization
-2. **Trigonometry** (`src/trigonometry.py`)
-   - unit circle animation
-   - sin/cos projections
-   - live sine wave linkage
-3. **Spatial Reasoning** (`src/spatial_reasoning.py`)
-   - moving heading in 3D
-   - dot product and angle readout
-   - yaw/pitch intuition
-4. **Geometry & Poses** (`src/geometry_poses.py`)
-   - rigid body pose (translation + yaw/pitch/roll)
-   - local frame vs world frame
-5. **Binary Descriptors** (`src/binary_descriptors.py`)
-   - descriptor bit rings
-   - rotation/noise effects
-   - Hamming distance visualization
-6. **Transforms** (`src/transforms.py`)
-   - moving local frame B in world W
-   - point conversion from local to world
-7. **Tensors** (`src/tensors.py`)
-   - 3x3 tensor acting on vectors
-   - quadratic form readout
-   - warped field intuition
-8. **Physics** (`src/physics.py`)
-   - mass-spring-damper simulation
-   - force vectors (spring, damping, gravity)
-   - energy readouts
+This project flips that.
+You manipulate vectors, rotate frames, tune physical systems, and watch the math respond in real time.
+
+This is math as engineering candy.
+
+---
+
+## The Eight Realms
+
+### 1) Linear Algebra
+![Linear Algebra](assets/linear_algebra.png)
+- draggable vectors, sums, span grid
+- geometric vector addition and basis intuition
+
+### 2) Trigonometry
+![Trigonometry](assets/trigonometry.png)
+- unit circle, live sin/cos projections
+- wave generation from rotational motion
+
+### 3) Spatial Reasoning
+![Spatial Reasoning](assets/spatial_reasoning.png)
+- moving 3D heading vector
+- dot-product and angle interpretation in motion
+
+### 4) Geometry & Poses
+![Geometry & Poses](assets/geometry_poses.png)
+- pose control via translation + yaw/pitch/roll
+- world frame vs local body frame
+
+### 5) Binary Descriptors
+![Binary Descriptors](assets/binary_descriptors.png)
+- visual bit-ring descriptors
+- rotation/noise effects + Hamming distance
+
+### 6) Transforms
+![Transforms](assets/transforms.png)
+- local-to-world coordinate conversion
+- moving frame dynamics
+
+### 7) Tensors
+![Tensors](assets/tensors.png)
+- 3x3 tensor acting on vectors and local field points
+- quadratic form intuition
+
+### 8) Physics
+![Physics](assets/physics.png)
+- mass-spring-damper simulation
+- force vectors + energy readouts
 
 ---
 
 ## Quickstart
 
 ```bash
-# Clone
- git clone https://github.com/jclosure/mathmind-playground.git
- cd mathmind-playground
+git clone https://github.com/jclosure/mathmind-playground.git
+cd mathmind-playground
 
-# Install deps
-python3 -m pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-# Launch menu
 python3 -m src.launcher
 ```
 
@@ -67,30 +84,37 @@ Or run any module directly:
 
 ```bash
 python3 src/trigonometry.py
-python3 src/transforms.py
+python3 src/physics.py
 ```
 
 ---
 
-## Hackable by design
+## Hackability
 
-Each module has a `# 🔧 ADJUST THIS` section near the top.
+Every module includes a clearly marked `# 🔧 ADJUST THIS` section near the top.
 
-Change constants, rerun, and explore new behavior immediately.
+Change constants, rerun, and observe the system immediately.
 
-Examples:
-- wave speed in trigonometry
-- damping in physics
-- tensor coefficients in tensors
-- frame rotation defaults in transforms
+Good first tweaks:
+- `ANGULAR_SPEED` in `trigonometry.py`
+- `DAMPING_C` in `physics.py`
+- `TENSOR_INIT` in `tensors.py`
+- `POINT_LOCAL` in `transforms.py`
 
 ---
 
-## Screenshots and demo clips
+## Current Scope
 
-Media pass is in progress.
-
-The README is now aligned with the current codebase. Next update will add real screenshots/GIFs from each module under `assets/`.
+Implemented and runnable now:
+- `src/linear_algebra.py`
+- `src/trigonometry.py`
+- `src/spatial_reasoning.py`
+- `src/geometry_poses.py`
+- `src/binary_descriptors.py`
+- `src/transforms.py`
+- `src/tensors.py`
+- `src/physics.py`
+- `src/launcher.py`
 
 ---
 
@@ -102,14 +126,15 @@ Geometry is how form speaks.
 Transforms are how relationships speak.
 Physics is how change speaks.
 
-This project is about intuition first, symbols second.
+The goal is not to memorize formulas.
+The goal is to *feel* the machinery of thought.
 
 ---
 
 ## Requirements
 
 - Python 3.9+
-- A modern browser (VPython opens scenes in browser)
+- modern browser (VPython renders there)
 - WebGL-capable graphics
 
 ---
