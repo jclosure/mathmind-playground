@@ -9,10 +9,6 @@
 An interactive 3D playground for mathematical intuition. Built with VPython, designed for hacking.
 
 <p align="center">
-  <img src="assets/hero_overview.png" alt="MathMind overview across all realms" width="900" />
-</p>
-
-<p align="center">
   <img src="assets/teaser.gif" alt="MathMind teaser animation" width="900" />
 </p>
 
